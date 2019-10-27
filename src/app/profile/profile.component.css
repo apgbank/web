@@ -1,0 +1,63 @@
+.profile_section {
+  padding: 15px 0px;
+}
+
+.container {
+  background: white;
+  min-height: calc(100vh - 121px);
+}
+
+label {
+  white-space: nowrap;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+img {
+  border: 1px solid grey;
+  border-radius: 5px;
+  width: 80%;
+  height: 250px;
+}
+
+.custom_file_input {
+  position: absolute;
+  font-size: 20px;
+  cursor: pointer;
+  right: 15%;
+  color: #2462e8;
+}
+
+.profile {
+  margin: 10px;
+}
+
+
+.kyc {
+  padding-left: 15px;
+}
+
+i {
+  color: #000422;
+}
+
+.control-label {
+  margin-top: 12px;
+  color: #000422;
+  font-weight: 500;
+}
+
+p {
+  color: black;
+}
+
+input:focus, input:hover {
+  background: none !important;
+}
+
+.custom_width{
+  width: 98%;
+}
+

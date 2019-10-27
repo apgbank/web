@@ -1,0 +1,281 @@
+<app-menu></app-menu>
+<section class="top_custom_height">
+  <div style="min-height:calc(100vh - 120px) "  class="bg_color">
+
+    <div class="loading_content" *ngIf="noContent">
+      <i class="fas fa-spinner fa-spin"></i>
+      <br>
+      <b>Please wait...</b>
+    </div>
+
+    <div *ngIf="!noContent" class="container">
+      <ul class="nav nav-tabs">
+        <li id="sendTab" class="active">
+          <a data-toggle="tab" href="#send">SEND</a>
+        </li>
+        <li>
+          <a data-toggle="tab" href="#receive">RECEIVE</a>
+        </li>
+        <li id="depositTab">
+          <a data-toggle="tab" href="#deposit">DEPOSIT</a>
+        </li>
+        <li>
+          <a data-toggle="tab" href="#withdraw">WITHDRAW</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="send" class="tab-pane fade in active">
+
+          <div class="internal_section">
+            <div class="text_align_center center_align">
+              <h4>Sent Transaction Details</h4>
+              <div>
+                <p class="text_align_left color_black">
+                   All the transactions that you have sent to other users are listed below.
+                </p>
+                <div *ngIf="sentTransactions" class="table-responsive">
+                  <div *ngIf="sentTransactions.length == 0">
+                    <p class="no_transactions">Sorry , No transactions found</p>
+                  </div>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>S.No</th>
+                        <th>Sent To</th>
+                        <th>Amount - USD</th>
+                        <!-- <th>Amount - XLM</th> -->
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="cursor-pointer" (click)="modalData(transaction,'Sent Transaction Detail')" data-toggle="modal" data-target="#myModal"
+                        *ngFor="let transaction of sentTransactions | paginate: { itemsPerPage: 10, currentPage: pageNo1 ,id:'sent' };let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{transaction.receiver.firstName}} {{transaction.receiver.lastName}}</td>
+                        <td>$ {{transaction.walletAmount}}</td>
+                        <!-- <td>{{transaction.amount}} XLM</td> -->
+                        <td>{{transaction._id}}</td>
+                        <td>{{transaction.createdTs | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{transaction.createdTs | date: 'HH:mm:ss'}}</td>
+                        <td>Success</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls id="sent" class="my-pagination" (pageChange)="pageNo1 = $event"></pagination-controls>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div id="receive" class="tab-pane fade">
+          <div class="internal_section">
+            <div class="text_align_center center_align">
+              <h4>Received Transaction Details</h4>
+              <div>
+                <p class="text_align_left">
+                   All the transactions that other users have sent to you are listed below.
+                </p>
+                <div *ngIf="receivedTransactions" class="table-responsive">
+                  <div *ngIf="receivedTransactions.length == 0">
+                    <p class="no_transactions">Sorry , No transactions found</p>
+                  </div>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>S.No</th>
+                        <th>Sent From</th>
+                        <th>Amount</th>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="cursor-pointer" (click)="modalData(transaction,'Received Transaction Detail')" data-toggle="modal"
+                        data-target="#myModal" *ngFor="let transaction of receivedTransactions | paginate: { itemsPerPage: 10, currentPage: pageNo2 ,id:'received' };let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{transaction.sender.firstName}} {{transaction.sender.lastName}}</td>
+                        <td>$ {{transaction.walletAmount}}</td>
+                        <!-- <td>{{transaction.amount}} XLM</td> -->
+                        <td>{{transaction._id}}</td>
+                        <td>{{transaction.createdTs | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{transaction.createdTs | date: 'HH:mm:ss'}}</td>
+                        <td>Success</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls id="received" class="my-pagination" (pageChange)="pageNo2 = $event"></pagination-controls>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="deposit" class="tab-pane fade">
+          <div class="internal_section">
+            <div class="text_align_center center_align">
+              <h4> Deposit Amount Details</h4>
+              <div>
+                <p class="text_align_left">
+                   All the details of your deposit transactions are listed below.
+                </p>
+                <div *ngIf="depositTransactions" class="table-responsive">
+                  <div *ngIf="depositTransactions.length == 0">
+                    <p class="no_transactions">Sorry , No transactions found</p>
+                  </div>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>S.No</th>
+                        <th>USD Amount</th>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      <tr class="cursor-pointer" (click)="modalData(transaction,'Deposit Transaction Detail')" data-toggle="modal" data-target="#myModal"
+                        *ngFor="let transaction of depositTransactions | paginate: { itemsPerPage: 10, currentPage: pageNo3 ,id:'deposit' };let i = index">
+                        <td>{{i+1}}</td>
+                        <td>$ {{transaction.amount}}</td>
+                        <!-- <td>{{transaction.amount}} XLM</td> -->
+                        <td>{{transaction._id}}</td>
+                        <td>{{transaction.createdTs | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{transaction.createdTs | date: 'HH:mm:ss'}}</td>
+                        <td>Success</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls id="deposit" class="my-pagination" (pageChange)="pageNo3 = $event"></pagination-controls>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="withdraw" class="tab-pane fade">
+          <div class="internal_section">
+            <div class="text_align_center center_align">
+              <h4> Withdraw Amount Details</h4>
+              <div>
+                <p class="text_align_left">
+                   All the details of the withdrawl requests by you are listed below.
+                </p>
+                <div *ngIf="withdrawTransactions" class="table-responsive">
+                  <div *ngIf="withdrawTransactions.length == 0">
+                    <p class="no_transactions">Sorry , No transactions found</p>
+                  </div>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>S.No</th>
+                        <th>USD Amount</th>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="cursor-pointer" (click)="modalData(transaction,'Withdraw Transaction Detail')" data-toggle="modal"
+                        data-target="#myModal" *ngFor="let transaction of withdrawTransactions | paginate: { itemsPerPage: 10, currentPage: pageNo4 ,id:'withdraw' };let i = index">
+                        <td>{{i+1}}</td>
+                        <td>$ {{transaction.received}}</td>
+                        <!-- <td>{{transaction.amount}} XLM</td> -->
+                        <td>{{transaction._id}}</td>
+                        <td>{{transaction.createdTs | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{transaction.createdTs | date: 'HH:mm:ss'}}</td>
+                        <td>Success</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls id="withdraw" class="my-pagination" (pageChange)="pageNo4 = $event"></pagination-controls>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div style="text-align:center" class="modal-header">
+            <h4>{{modal.title}}</h4>
+          </div>
+          <h4 style="text-align:center">You have {{modal.type}} <span style="font-size:22px; font-weight: 500;">{{modal.amount}}
+              USD</span> </h4>
+          <div class="modal-body">
+            <div class="modal-details">
+              <table class="modal-table">
+                <tbody>
+                  <tr>
+                    <td *ngIf="modal.receiver">
+                      <b style="font-weight:500" *ngIf="modal.type=='sent'">Sent to</b>
+                      <b  *ngIf="modal.type=='received'">Received from</b>
+                    </td>
+                    <td class="right_align">{{modal.receiver}}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b style="font-weight:500">Status</b>
+                    </td>
+                    <td class="right_align" style="color:green">Success</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr>
+            <div class="modal-amount">
+              <table class="modal-table">
+                <tbody>
+                  <tr>
+                    <td style="text-transform:capitalize">Amount {{modal.type}}</td>
+                    <td class="right_align">${{modal.amount}}</td>
+                  </tr>
+                  <tr *ngIf="modal.fee">
+                    <td>Transaction Fee</td>
+                    <td class="right_align">${{modal.fee}}</td>
+                  </tr>
+                  <tr>
+                    <td>Total Amount</td>
+                    <td class="right_align">$ {{modal.total | number : '1.2-2'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <table class="modal-table">
+              <tbody>
+                <tr>
+                  <td><span>Time: {{modal.createdTime | date: 'dd/MM/yyyy'}} & {{modal.createdTime | date: 'HH:mm:ss'}}</span>
+                  </td>
+                  <td class="right_align"> <button type="button" class="btn btn-default" data-dismiss="modal">Done</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <app-footer></app-footer>
+</section>

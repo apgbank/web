@@ -1,0 +1,140 @@
+.dashboard_section {
+    padding: 15px 0px;
+}
+
+.balance_section {
+    margin: 15px;
+}
+
+.graph_section {
+    margin: 15px;
+}
+
+.recent_activities_section {
+    margin: 15px;
+}
+
+.outer_box {
+    width: 95%;
+    border: 1px solid #a95309;
+    padding: 10px;
+    border-radius: 4px;
+    /* background: #151935; */
+  color:#5A3F3F;
+    text-align: center;
+    margin: 10px;
+}
+
+.button_color{
+    color: #8C8C8C;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.conversion_rate {
+    font-size: 21px;
+    font-weight: bold;
+    padding: 6px 0px;
+}
+
+.recent_transactions_card {
+    width: 100%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 3px;
+    background: #f2eefe;
+}
+
+h4 {
+    font-size: 18px;
+}
+
+h3 {
+    font-size: 24px;
+}
+
+i {
+    color: #000422;
+}
+
+.card {
+    width: 78%;
+    border: 1px solid lightgrey;
+    margin: 15px auto;
+    padding: 15px;
+    background:  #151935;
+    cursor: pointer;
+}
+
+.right-float {
+    float: right;
+}
+
+.card-details {
+    font-size: 18px;
+    color: blue;
+    padding: 10px 0px;
+}
+
+.small-font {
+    font-size: 12px;
+}
+
+.view-more {
+    color: #151935;
+    text-align: right;
+    cursor: pointer;
+    width: 90%;
+    text-decoration: underline;
+}
+
+.right_align{
+    float: right;
+}
+.modal-content{
+    background:  #000422;
+    color:white;
+}
+.modal-table{
+    width: 100%;
+}
+.btn-default{
+    background: #000422;
+    color: white;
+}
+
+.btn-default:hover{
+    background: #000422;
+    color: white;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+td {
+    white-space: nowrap;
+    /* text-align: left; */
+    padding: 10px !important;
+}
+
+.col-sm-4{
+    width: 32.33333%
+}
+.col-md-6{
+    width: 49%;
+}
+
+@media only screen and (max-width: 769px) {
+    /* .col-sm-4{
+        width: 99%
+    }
+    .col-md-6{
+        width: 99%;
+    } */
+}
+
+.desc{
+    color: #959698;
+}

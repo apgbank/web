@@ -1,0 +1,132 @@
+.nav-tabs>li {
+    width: 24%;
+    text-align: center;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    font-weight: bold;
+    border: none;
+    border-bottom: 2px solid #151935;
+}
+
+a {
+    color: #151935;
+}
+
+a:hover {
+    /* font-size: 18px; */
+    color: #151935!important;
+}
+
+.nav-tabs {
+    /* border-bottom: none; */
+    padding-top: 10px;
+}
+
+.bg_color {
+    background: white;
+}
+
+.container {
+    background: white;
+    min-height: calc(100vh - 121px);
+    padding-bottom: 10px;
+}
+
+.internal_section {
+    padding: 0px;
+}
+
+.center_align {
+    width: 85%;
+    margin: 0 auto;
+}
+
+@media only screen and (max-width: 768px) {
+    .center_align {
+        width: 100%;
+    }
+}
+
+.text_align_left {
+    text-align: left;
+}
+
+.text_align_left {
+    text-align: left;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+td {
+    white-space: nowrap;
+    /* text-align: left; */
+    padding: 10px !important;
+}
+
+th {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.no_transactions {
+    color: red;
+    font-size: 16px;
+}
+
+p {
+    color: black;
+}
+
+h4 {
+    padding: 15px 0px 0px 0px;
+}
+
+i {
+    color: #000422;
+}
+
+.control-label {
+    margin-top: 12px;
+    color: #000422;
+}
+
+p {
+    color: black;
+}
+
+input:focus, input:hover {
+    background: none !important;
+}
+
+.my-pagination /deep/ .ngx-pagination .current {
+    background: #010922 !important;
+    border-radius: 3px;
+    color: #151935;
+}
+  
+.right_align{
+    float: right;
+}
+.modal-content{
+    background:  #000422;
+    color:white;
+}
+.modal-table{
+    width: 100%;
+}
+.btn-default{
+    background: #000422;
+    color: white;
+}
+
+.btn-default:hover{
+    background: #000422;
+    color: white;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

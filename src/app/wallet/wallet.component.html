@@ -1,0 +1,548 @@
+<app-menu></app-menu>
+
+<section class="top_custom_height">
+  <div style="min-height:calc(100vh - 120px) " class="bg_color">
+
+
+
+
+    <div class="container">
+
+      <ul class="nav nav-tabs">
+        <li id="sendTab" class="active">
+          <a data-toggle="tab" href="#send">SEND</a>
+        </li>
+        <li id="receiveTab">
+          <a data-toggle="tab" href="#receive">RECEIVE</a>
+        </li>
+        <li id="depositTab">
+          <a data-toggle="tab" href="#deposit">DEPOSIT</a>
+        </li>
+        <li>
+          <a data-toggle="tab" href="#withdraw">WITHDRAW</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+
+        <!-- <button (click)="showReceive()">tets</button> -->
+
+        <div id="send" class="tab-pane fade in active">
+          <div class="loading_content" *ngIf="noContent">
+            <i class="fas fa-spinner fa-spin"></i>
+            <br>
+            <b>Please wait...</b>
+          </div>
+          <div *ngIf="!noContent" class="internal_section">
+            <div class="text_align_center width_60">
+              <h4 style="text-align:left">Send Money</h4>
+              <div>
+             
+                <p class="text_align_left">
+                    <!-- <img src="./../../assets/img/help.png" title="help" style="height:15px;width:15px;margin-top:-5px"> -->
+                  Send money to other people who are registered on the app. A small transaction fee will apply above the
+                  amount you intend to send and it would be deducted from your balance.
+                </p>
+                <br>
+                <form class="form-horizontal">
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-4" for="email">Available Balance:</label>
+                    <div *ngIf="availableBalance && availableBalance[0] && xlm_Usd_conversion" class="col-sm-8 text_align_left" style="margin-top:8px">
+                      <b> $ {{availableBalance[0].balance * xlm_Usd_conversion}}</b>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-4" for="mobile">Receipient Mobile:</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="receiverMobileNumber" id="mobile" placeholder="Recipient Mobile Number"
+                        name="mobile" (ngModelChange)="getAutocompleteMobileNumbers()">
+                      <div *ngIf="autocompleteNumbers && autocompleteNumbers.length>0" class="autocomplete_numbers">
+                        <div class="number_div" *ngFor="let mobile of autocompleteNumbers" (click)="selectedMobileNumber(mobile)">{{mobile.mobile_number}} - {{mobile.firstName}}{{mobile.lastName}}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-4" for="amount">Amount to Send:</label>
+                    <div class="col-sm-8">
+                      <input type="number" class="form-control" id="amount" placeholder="Enter the amount" [(ngModel)]="amountToSend" (ngModelChange)="calculateSendFee()"
+                        name="amount" min="0">
+                    </div>
+                  </div>
+
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>Amount to be sent</td>
+                        <td>$ {{amountToSend}}</td>
+                      </tr>
+                      <tr>
+                        <td>Transaction Fee</td>
+                        <td>$ {{sendWalletFee_USD}}</td>
+                      </tr>
+                      <tr>
+                        <td>Total</td>
+                        <td>$ {{sendWalletAmount_USD}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <span class="pleaseWaitOption" style="margin-right: 10px" *ngIf="waitingForResponse">
+                        <i class="fas fa-spinner fa-spin"></i> Please wait...</span>
+                      <button type="submit" (click)="sendAmount()" [disabled]="waitingForResponse" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="receive" class="tab-pane fade">
+          <div class="loading_content" *ngIf="noContent">
+            <i class="fas fa-spinner fa-spin"></i>
+            <br>
+            <b>Please wait...</b>
+          </div>
+          <div *ngIf="!noContent" class="internal_section">
+            <div class="text_align_center width_60">
+              <h4 style="text-align:left">Receive Money</h4>
+              <div *ngIf="yourMobileNumber">
+              
+                <p class="text_align_left">
+                To receive money, the other person sending money has to scan the QR code or type your phone number displayed
+                  below. Only users registered on the app can send you money.
+                </p>
+                <br>
+                <div style="margin-left: calc(100% - 60%);">
+                  <qrcode [qrdata]="yourMobileNumber" [size]="128" [level]="'H'"></qrcode>
+                </div>
+                <br>
+                <div>
+                  <span class="color_black"> Mobile Number </span> : {{yourMobileNumber}}</div>
+                <br>
+                <p class="text_align_left">
+                  Tip: You can also screenshot the QR code image and display it on your website or shop.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="deposit" class="tab-pane fade ">
+          <div class="loading_content" *ngIf="noContent">
+            <i class="fas fa-spinner fa-spin"></i>
+            <br>
+            <b>Please wait...</b>
+          </div>
+          <div *ngIf="!noContent" class="internal_section">
+            <div class="text_align_center width_80">
+              <h4 class="text_align_left">Add Money</h4>
+              <div>
+                <p class="text_align_left">
+                 Add money to your wallet and the amount will be available for sending to others.
+                </p>
+                <br>
+
+                <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible bg_theme">
+                  <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <strong>Success!</strong> Your Last Transaction was successful.
+                </div>
+
+                <div *ngIf="showFailureAlert" class="alert alert-warning alert-dismissible bg_theme">
+                  <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <strong>Error!</strong> Your Last Transaction was Failed.
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-sm-4" for="amountToAdd">Amount to Add:</label>
+                  <div class="col-sm-8">
+                    <input type="number" class="form-control" id="amountToAdd" placeholder="Enter the amount" [(ngModel)]="amountToDeposit" name="amountToAdd">
+                    <span class="color_black" style="float:right;font-size: 12px;">* Transaction Fee Applies</span>
+                  </div>
+                </div>
+                <br>
+                <br>
+                <div class="text_align_left">
+                  Tip: Keep sufficient balance in your wallet, a small transaction fee will be apply above the amount you plan to send.
+                </div>
+              </div>
+              <hr>
+              <div class="saved_card_section">
+                <h4 class="text_align_left">Saved Cards</h4>
+                <div *ngIf="savedCards" class="row">
+
+
+                  <div *ngIf="savedCards && savedCards.length == 0" style="text-align:center;width:100%">
+                    <p class="no_transactions">Sorry , No Saved Card Details</p>
+                  </div>
+
+
+                  <div [ngClass]="{'selected': card.selected}" (click)="selectedCard(card)" class="text_align_left col-xs-6 card" *ngFor="let card of savedCards">
+                    <div class="row card_top">
+                      <div class="col-xs-8">
+                        <span class="card_label">
+                          Card Number
+                        </span>
+                        <br>
+                        <span>{{card.number}}</span>
+                      </div>
+                      <div class="col-xs-4" style="text-align:right;font-size:20px;font-weight:bold">
+                      </div>
+                    </div>
+                    <div class="row card_bottom">
+                      <div class="col-xs-4">
+                        <span class="card_label">
+                          Expiry Date
+                        </span>
+                        <br>
+                        <span>{{card.expiry}}</span>
+                      </div>
+                      <div class="col-xs-4">
+                        <span class="card_label">
+                          Card Holder
+                        </span>
+                        <br>
+                        <span *ngIf="card.holder" style="white-space:nowrap">{{card.holder.slice(0,10)}}
+                          <span *ngIf="card.holder && card.holder.length>10">... </span>
+                        </span>
+                      </div>
+                      <div class="col-xs-4" style="text-align:center">
+                        <span class="card_label">
+                          CVV
+                        </span>
+                        <br>
+                        <span *ngIf="!card.selected">XXX</span>
+                        <input *ngIf="card.selected" [(ngModel)]="cardData.cvv" type="text" class="form-control custom_cvv" id="savedCardCvvNum"
+                          maxlength="3" pattern="\d{3}" onkeydown="return ( event.ctrlKey || event.altKey 
+                        || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) 
+                        || (95<event.keyCode && event.keyCode<106)
+                        || (event.keyCode==8) || (event.keyCode==9) 
+                        || (event.keyCode>34 && event.keyCode<40) 
+                        || (event.keyCode==46) )">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10" *ngIf="savedCards && savedCards.length > 0">
+                    <span class="pleaseWaitOption" style="margin-right: 5px" *ngIf="waitingForResponse">
+                      <i class="fas fa-spinner fa-spin"></i> Please wait...</span>
+                    <button [disabled]="waitingForResponse" style="float:right" type="submit" (click)="createToken()" class="btn btn-primary">Use This Card</button>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="saved_card_section">
+                <h4 class="text_align_left">New Card</h4>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="usrName">Name on Card
+                        <span class="red">*</span>
+                      </label>
+                      <input style="text-transform:uppercase" type="text" [(ngModel)]="cardData.cardHolder" class="form-control" id="usrName">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="cardNum">Card Number
+                        <span class="red">*</span>
+                      </label>
+                      <input type="number" [(ngModel)]="cardData.cardNumber" class="form-control" id="cardNum">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group text_align_left">
+                      <label for="month">Month
+                        <span class="red">*</span>
+                      </label>
+                      <select [(ngModel)]="cardData.month" class="form-control" id="month">
+                        <option *ngFor="let obj of cardMonth" [value]="obj">{{obj}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group text_align_left">
+                      <label for="year">Year
+                        <span class="red">*</span>
+                      </label>
+
+                      <select [(ngModel)]="cardData.year" class="form-control" id="year">
+                        <option *ngFor="let obj of cardYear" [value]="obj">{{obj}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="cvvNum">CVV Number
+                        <span class="red">*</span>
+                      </label>
+                      <input [(ngModel)]="cardData.cvv" type="text" class="form-control" id="cvvNum" maxlength="3" pattern="\d{3}" onkeydown="return ( event.ctrlKey || event.altKey 
+                      || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) 
+                      || (95<event.keyCode && event.keyCode<106)
+                      || (event.keyCode==8) || (event.keyCode==9) 
+                      || (event.keyCode>34 && event.keyCode<40) 
+                      || (event.keyCode==46) )">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div>
+                    <div class="form-group text_align_left">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" [(ngModel)]="cardData.saveCard" value="">Save this Card for future use</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <span class="pleaseWaitOption" style="margin-right: 5px" *ngIf="waitingForResponse">
+                      <i class="fas fa-spinner fa-spin"></i> Please wait...</span>
+                    <button [disabled]="waitingForResponse" style="float:right" type="submit" (click)="createToken()" class="btn btn-primary">Add New Card and Proceed</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div id="withdraw" class="tab-pane fade ">
+          <div class="loading_content" *ngIf="noContent">
+            <i class="fas fa-spinner fa-spin"></i>
+            <br>
+            <b>Please wait...</b>
+          </div>
+          <div *ngIf="!noContent" class="internal_section">
+            <div class="text_align_center width_80">
+              <h4 class="text_align_left">Withdraw Money</h4>
+              <div>
+             
+                <p class="text_align_left">
+                Refund money from your wallet to your bank account.
+                </p>
+                <br>
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label class="control-label col-sm-4" for="email">Available Balance:</label>
+                    <div *ngIf="availableBalance && availableBalance[0] && xlm_Usd_conversion" class="col-sm-8 text_align_left" style="margin-top:8px">
+                      <b> $ {{availableBalance[0].balance * xlm_Usd_conversion}}</b>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-4" for="amountToWithdraw">Withdraw Amount:</label>
+                    <div class="col-sm-8">
+                      <input type="number" class="form-control" id="amountToWithdraw" placeholder="Enter the amount" [(ngModel)]="amountToWithdraw"
+                        name="amountToWithdraw" (ngModelChange)="calculateWithdrawFee()">
+                      <span style="float:right;font-size: 12px;">* Transaction Fee Applies</span>
+                    </div>
+                  </div>
+                </form>
+                <br>
+              </div>
+
+              <div class="saved_card_section">
+                <h4 class="text_align_left">Saved Details</h4>
+                <div class="row">
+                  <div *ngIf="withdrawBankDetails && withdrawBankDetails.length == 0" style="text-align:center;width:100%">
+                    <p class="no_transactions">Sorry , No Saved Details</p>
+                  </div>
+                  <div [ngClass]="{'selected': card.selected}" (click)="selectedWithdrawBankDetails(card)" class="text_align_left col-xs-6 card"
+                    *ngFor="let card of withdrawBankDetails">
+                    <div class="row card_top">
+                      <div class="col-xs-6">
+                        <span class="card_label">
+                          Full Name
+                        </span>
+                        <br>
+                        <span>{{card.firstName}} {{card.lastName}}</span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="card_label">
+                          Account Number
+                        </span>
+                        <br>
+                        <span>{{card.accountNumber}}</span>
+                      </div>
+                    </div>
+                    <div class="row card_bottom">
+
+                      <div class="col-xs-6">
+                        <span class="card_label">
+                          Card Holder
+                        </span>
+                        <br>
+                        <span style="white-space:nowrap">{{card.accountHolder.slice(0,10)}}
+                          <span *ngIf="card.accountHolder && card.accountHolder.length>10">... </span>
+                        </span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="card_label">
+                          Routing Number
+                        </span>
+                        <br>
+                        <span>{{card.routingNumber}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10" *ngIf="withdrawBankDetails && withdrawBankDetails.length > 0">
+                  <span class="pleaseWaitOption" style="margin-right: 5px" *ngIf="waitingForResponse">
+                    <i class="fas fa-spinner fa-spin"></i>Please wait...</span>
+                  <button style="float:right" type="submit" (click)="withdrawToSelectedAccount()" [disabled]="waitingForResponse" class="btn btn-primary">Use this Account</button>
+                </div>
+              </div>
+
+              <div class="">
+                <h4 class="text_align_left">Withdraw to bank account</h4>
+                <div class="row">
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="fName">First Name </label>
+                      <input type="text" class="form-control" [(ngModel)]="withdraw.firstName" placeholder="John" name="fName">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="lName">Last Name </label>
+                      <input type="text" class="form-control" placeholder="Kennedy" [(ngModel)]="withdraw.lastName" name="lName">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="address1">Address Line1 </label>
+                      <input type="text" class="form-control" placeholder="4, Leng Kee Road " [(ngModel)]="withdraw.line1" name="address1">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="address2">Address Line2 </label>
+                      <input type="text" class="form-control" placeholder="Citilink Warehouse Complex" [(ngModel)]="withdraw.line2" name="address2">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="state">State </label>
+                      <input type="text" class="form-control" placeholder="California" [(ngModel)]="withdraw.state" name="state">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="city">City </label>
+                      <input type="text" class="form-control" placeholder="Los Angeles" [(ngModel)]="withdraw.city" name="city">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="zipcode">Zip Code </label>
+                      <input type="text" class="form-control" placeholder="90001" [(ngModel)]="withdraw.postalCode" name="zipcode" disabled>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="mobile">Mobile Number </label>
+                      <input type="text" class="form-control" placeholder="213-509-6995" [(ngModel)]="withdraw.phoneNumber" maxlength="10" id="ssn"
+                        pattern="\d{10}" name="mobile" onkeydown="return ( event.ctrlKey || event.altKey 
+                      || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) 
+                      || (95<event.keyCode && event.keyCode<106)
+                      || (event.keyCode==8) || (event.keyCode==9) 
+                      || (event.keyCode>34 && event.keyCode<40) 
+                      || (event.keyCode==46) )">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="ssn">Social Security Number </label>
+                      <input type="text" class="form-control" placeholder="XXXX" [(ngModel)]="withdraw.ssn" maxlength="4" id="ssn" pattern="\d{4}"
+                        onkeydown="return ( event.ctrlKey || event.altKey 
+                      || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) 
+                      || (95<event.keyCode && event.keyCode<106)
+                      || (event.keyCode==8) || (event.keyCode==9) 
+                      || (event.keyCode>34 && event.keyCode<40) 
+                      || (event.keyCode==46) )" name="ssn">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="dob">Date of Birth </label>
+                      <input type="text" id="birthday" class="form-control profile" placeholder="MM-DD-YYYY" [(ngModel)]="withdraw.dob" name="dob">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="accNum">Account Number</label>
+                      <input type="text" class="form-control" placeholder="000987466364" [(ngModel)]="withdraw.accountNumber" maxlength="10" size="10"
+                        name="accNum">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="accholderName">Account Holder Name </label>
+                      <input type="text" class="form-control" placeholder="Jenny" [(ngModel)]="withdraw.accountHolder" name="accholderName">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="routing">Routing Number </label>
+                      <input type="text" class="form-control" placeholder="00399883477848" [(ngModel)]="withdraw.routingNumber" maxlength="10"
+                        size="10" name="routing">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <label for="proof">Upload Proof </label>
+                      <input type="file" accept="image/*" id="withdrawProof" name="withdrawProof" class="form-control" (change)="withdrawProof($event)">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group text_align_left">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" [(ngModel)]="withdraw.saveDetails" value="">Save this for future use</label>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div style="width:100%">
+                    <span class="pleaseWaitOption" style="margin-right: 5px" *ngIf="waitingForResponse">
+                      <i class="fas fa-spinner fa-spin"></i>Please wait...</span>
+                    <button style="float:right;margin-right:20px" type="submit" (click)="withdrawToNewAmount()" [disabled]="waitingForResponse"
+                      class="btn btn-primary">Submit</button>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <app-footer></app-footer>
+</section>
